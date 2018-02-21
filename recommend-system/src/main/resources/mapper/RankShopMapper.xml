@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.elikv.recommendsystem.dao.RankShopDao">
+
+	<insert id="addList"  >
+		insert
+			 into 
+		t_rank_shop
+			 (createTime,id,rankTime,rankNo,shopName,address,defaultPic,categoryId,rankType,shopTags,avgPrice,refinedScore1,refinedScore2,refinedScore3,shopId,url)
+		 values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(now(),uuid(),#{item.rankTime},#{item.rankNo},#{item.shopName},#{item.address},#{item.defaultPic},#{item.categoryId},#{item.rankType},#{item.shopTags},#{item.avgPrice},#{item.refinedScore1},#{item.refinedScore2},#{item.refinedScore3},#{item.shopId},#{item.url})
+		</foreach>
+	</insert>
+	
+	<select id="findByShopId" resultType="com.elikv.recommendsystem.model.RankShopInfo" parameterType="INTEGER">
+		select * from t_rank_shop where shopId = #{shopId} order by rankTime desc
+	</select>
+	
+	<select id="findByShopIdAndRankTime" resultType="com.elikv.recommendsystem.model.RankShopInfo" parameterType="java.util.Map">
+		select * from t_rank_shop where shopId = #{shopId} and rankTime = #{rankTime} order by rankTime desc
+	</select>
+	
+	<select id="findByShopIdAndRankType" resultType="com.elikv.recommendsystem.model.RankShopInfo" parameterType="java.util.Map">
+		select * from t_rank_shop where shopId = #{shopId}  and rankType=#{rankType} order by rankTime desc
+	</select>
+	
+	<select id='findShopIdAll' resultType="String">
+		select shopId from t_rank_shop GROUP BY shopId
+	</select>
+	
+	<delete id='deletefromId' parameterType="String">
+		delete from t_rank_shop where id =#{id}
+	</delete>
+	
+	<select id='findShopIdRankTimeScore'  resultType="com.elikv.recommendsystem.model.ShopIdRankTimeScoreEntity">
+	select shopid,GROUP_CONCAT(a.score ORDER BY a.rankTime DESC SEPARATOR ',') as 'score',
+GROUP_CONCAT(a.rankTime ORDER BY a.rankTime DESC SEPARATOR ',') as 'rankTime'
+ from 
+(SELECT shopid,rankTime,count(*) * 100 - sum(rankNo) AS score	
+FROM t_rank_shop
+WHERE
+		refinedScore1 >= 8.0
+GROUP BY
+		rankTime,shopId)a
+		 GROUP BY shopid
+	</select>
+	
+		<select id="findNewtonCooling" resultType="com.elikv.recommendsystem.model.RankShopInfo" >
+	select tdd.`name` as categoryId,r.shopid,t.shopName,t.refinedScore1,t.refinedScore2,t.refinedScore3,t.address,t.defaultPic,t.avgPrice,coolingScore as rankNo from t_shopId_rankTime_score r  inner JOIN t_rank_shop t
+		ON t.shopId = r.shopid AND t.rankTime = left(r.ranktime,10) LEFT JOIN t_dic_data tdd on tdd.code=t.categoryId where 1=1
+<if test="category!=null and category!=''">
+			and t.categoryId = #{category}
+		</if>
+		<if test="start!=null and start!=''">
+			and t.avgPrice &gt;= #{start,jdbcType=DOUBLE}
+		</if>
+		<if test="end!=null and end!=''">
+			and t.avgPrice &lt;= #{end,jdbcType=DOUBLE}
+		</if>
+GROUP BY shopid ORDER BY coolingScore desc
+</select>
+	
+	
+	
+</mapper>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.elikv.recommendsystem.dao.DianPingDAO">
+<!--设置domain类和数据库中表的字段一一对应，注意数据库字段和domain类中的字段名称不致，此处一定要！ 
+	<resultMap id="BaseResultMap" type="com.dianping.model.ProxyIpInfo">
+		<id column="ip" property="ip" jdbcType="VARCHAR" />
+		<result column="port" property="port" jdbcType="INTEGER" />
+	</resultMap>-->
+
+	<!-- 添加单条记录 -->
+	<insert id="add" parameterType="com.elikv.recommendsystem.model.DianPingInfo" >
+		insert
+			 into 
+		t_shop
+			 (id,shopName,average,taste,env,service,address,cookStyle,comment,tag,url,img,createTime,shopId)
+		 values
+		    (uuid(),#{shopName},#{average},#{taste},#{env},#{service},#{address},#{cookStyle},#{comment},#{tag},#{url},#{img},now(),#{shopId})
+
+	</insert>
+	
+	<select id="findExist" resultType="String">
+		select url from t_shop
+	</select>
+	
+	
+		<select id="findAll" resultType="com.elikv.recommendsystem.model.DianPingInfo">
+		select id,shopId,url from t_shop
+	</select>
+	
+	<update id="update" parameterType="com.elikv.recommendsystem.model.DianPingInfo">
+		update t_shop
+		<trim prefix="SET" suffixOverrides=",">
+			createTime = now(),
+			<if test="taste !=null and taste !=''">
+				taste = #{taste},
+			</if>
+			<if test="shopId !=null and shopId !=''">
+				shopId = #{shopId},
+			</if>
+			<if test="env !=null and env !=''">
+				env = #{env},
+			</if>
+			<if test="service !=null and service !=''">
+				service = #{service},
+			</if>
+			<if test="shopName !=null and shopName !=''">
+				shopName = #{shopName},
+			</if>
+			<if test="comment !=null and comment !=''">
+				comment = #{comment},
+			</if>
+			<if test="address !=null and address !=''">
+				address = #{address},
+			</if>
+			<if test="cookStyle !=null and cookStyle !=''">
+				cookStyle = #{cookStyle},
+			</if>
+			<if test="average !=null and average !=''">
+				average = #{average},
+			</if>
+		</trim>
+		where id = #{id}
+	</update>
+	
+	
+	
+	
+	
+	
+	<select id='findShopIdByStar' resultType="String">
+		select DISTINCT(shopid) from t_shop_star
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	<select id="findMaxPage" parameterType="String">
+		select MAX(subString(SPLIT_STR(url,'/',7),2)+0)  from t_shop_star_child where shopId=#{shopId} 
+	</select>
+	
+	<select id='findStarShopId' resultType="String">
+		select shopId from t_rank_shop where refinedScore1>8 GROUP BY shopId ORDER BY count(shopId) desc
+		
+	</select>
+	
+		
+	
+	<select id='findRecommend' resultType="com.elikv.recommendsystem.model.RankShopInfo" parameterType="java.util.Map" >
+		
+		SELECT  tdd.`name` as categoryId,r.shopId,t.shopName,t.refinedScore1,t.refinedScore2,t.refinedScore3,t.address,t.defaultPic,t.avgPrice,t.url
+		FROM (
+		SELECT shopId,MAX(rankTime)as MaxTime,count(shopId) as num,categoryId 
+		      FROM t_rank_shop
+		      GROUP BY shopId
+		) r
+		inner JOIN t_rank_shop t
+		ON t.shopId = r.shopId AND t.rankTime = r.MaxTime
+		LEFT JOIN t_dic_data tdd on tdd.code=r.categoryId
+		where t.refinedScore1>8
+		<if test="category!=null and category!=''">
+			and t.categoryId = #{category}
+		</if>
+		<if test="start!=null and start!=''">
+			and t.avgPrice &gt;= #{start,jdbcType=DOUBLE}
+		</if>
+		<if test="end!=null and end!=''">
+			and t.avgPrice &lt;= #{end,jdbcType=DOUBLE}
+		</if>
+		GROUP BY (r.shopId)
+		ORDER BY r.num desc
+		
+	</select>
+	
+	
+	<insert id="addAppraise" parameterType="com.elikv.recommendsystem.model.AppraiseEntity" >
+		insert
+			 into 
+		t_shop_appraise
+			 (shopId,good,common,bad,score1,score2,createTime)
+		 values
+		    (#{shopId},#{good},#{common},#{bad},#{score1},#{score2},now())
+
+	</insert>
+	
+	<select id='findByShopId' resultType="com.elikv.recommendsystem.model.AppraiseEntity" parameterType="String" >
+		select * from t_shop_appraise where shopId = #{shopId}
+	
+	</select>
+	
+	<update id="updateAppraiseEntity" parameterType="com.elikv.recommendsystem.model.AppraiseEntity">
+		update t_shop_appraise
+		<trim prefix="SET" suffixOverrides=",">
+			createTime = now(),
+			<if test="good !=null and good !=''">
+				good = #{good},
+			</if>
+			<if test="common !=null and common !=''">
+				common = #{common},
+			</if>
+			<if test="bad !=null and bad !=''">
+				bad = #{bad},
+			</if>
+			<if test="score1 !=null and score1 !=''">
+				score1 = #{score1},
+			</if>
+			<if test="score2 !=null and score2 !=''">
+				score2 = #{score2},
+			</if>
+			
+		</trim>
+		where shopId = #{shopId}
+	</update>
+	
+	
+	
+	
+</mapper>
