@@ -4,15 +4,13 @@ import com.elikv.recommendsystem.model.BaiduMapLocation;
 import com.elikv.recommendsystem.model.ServiceResult;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.http.client.HttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,7 +47,7 @@ public class AddressServiceImpl {
 
         HttpGet get = new HttpGet(sb.toString());
         try {
-            HttpResponse response = httpClient.execute(get);
+            org.apache.http.HttpResponse response = httpClient.execute(get);
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 return new ServiceResult<BaiduMapLocation>(false, "Can not get baidu map location");
             }
