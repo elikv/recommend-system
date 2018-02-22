@@ -56,7 +56,7 @@ public class IndexController {
         String password = request.getParameter("password");
         userService.addUser(username,password);
         userService.loginAuto(username,password,request);
-        request.getRequestDispatcher("/newCooling").forward(request,response);
+        response.sendRedirect("newCooling");
     }
 
     @RequestMapping("/validate")

@@ -8,7 +8,7 @@
  pageContext.setAttribute("APP_PATH", request.getContextPath());
  %>
 	<meta charset="UTF-8">
-	<title>Document</title>
+	<title>魔都美食推荐</title>
 	<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.css" rel="stylesheet">
 	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
      <link rel="stylesheet" type="text/css" href="${APP_PATH}/WEB-INF/classes/static/css/common.css">
