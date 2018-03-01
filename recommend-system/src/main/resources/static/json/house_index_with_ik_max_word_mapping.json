@@ -1,0 +1,45 @@
+{
+  "settings": {
+    "number_of_replicas": 0
+  },
+  "mappings": {
+    "shop": {
+      "dynamic": false,
+      "properties": {
+        "shopId": {
+          "type": "integer"
+        },
+        "shopName": {
+          "type": "text",
+          "index": "analyzed",
+          "analyzer": "ik_max_word",
+          "search_analyzer": "ik_max_word"
+        },
+        "avgPrice": {
+          "type": "integer"
+        },
+        "category":{
+          "type": "text"
+        },
+        "createTime": {
+          "type": "date",
+          "format": "strict_date_optional_time||epoch_millis"
+        },
+
+        "address": {
+          "type": "text",
+          "index": "analyzed",
+          "analyzer": "ik_max_word",
+          "search_analyzer": "ik_max_word"
+        },
+
+        "suggest": {
+          "type": "completion"
+        },
+        "location": {
+          "type": "geo_point"
+        }
+      }
+    }
+  }
+}

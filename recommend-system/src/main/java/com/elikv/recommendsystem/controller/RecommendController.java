@@ -1,17 +1,17 @@
 package com.elikv.recommendsystem.controller;
 
-import java.util.List;
-
 import com.elikv.recommendsystem.model.RankShopInfo;
 import com.elikv.recommendsystem.service.DianPingServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+
+import java.util.List;
 
 
 @Controller
@@ -32,7 +32,9 @@ public class RecommendController {
 		model.addAttribute("pageInfo", page);
 		model.addAttribute("data", findRecommend);
 		return "recommend/index";
-	} 
+	}
+
+	
 	
 
 	 

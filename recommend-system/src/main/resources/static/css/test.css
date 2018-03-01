@@ -1,0 +1,21 @@
+/*test.css*/
+@import url("https://cdn.bootcss.com/element-ui/2.1.0/theme-chalk/index.css");
+/*@import url("css/elementui.css");*/
+
+.el-tag + .el-tag {
+/*    margin-left: 10px;*/
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+  .button-new-tag {
+    margin-left: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .input-new-tag {
+    width: 90px;
+    margin-left: 10px;
+    vertical-align: bottom;
+  }

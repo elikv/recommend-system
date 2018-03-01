@@ -87,3 +87,96 @@ ul{
 	border-color: orange;
 }
 
+/*搜索栏*/
+.head_wrapper{
+	position: relative;
+	height: 100%;
+	text-align: center;
+	min-width: 810px;
+	min-height: 600px;
+}
+.wrapper{
+	position: relative;
+	top:38.2%;
+}
+.search{
+	position: relative;
+	top:-191px;
+	font-size: 0;
+}
+.keywords{
+
+	border: 1px solid #b6b6b6;
+	border-color: #7b7b7b #b6b6b6 #b6b6b6 #7b7b7b;
+	background: #fff;
+	display: inline-block;
+	vertical-align: top;
+	width: 539px;
+	margin-right: 0;
+	border-right-width: 0;
+	border-color: #b8b8b8 transparent #ccc #b8b8b8;
+	overflow: hidden;
+	height: 36px;
+
+}
+.submit{
+	width:50px;
+	height: 36px;
+	color: #fff;
+	font-size: 15px;
+	letter-spacing: 1px;
+	background: #3385ff;
+	border:none;
+	outline: medium;
+	-webkit-appearance: none;
+	-webkit-border-radius: 0;
+}
+.keywordstext{
+	height: 22px;
+	width: 526px;
+	font: 16px/18px arial;
+	line-height: 22px;
+	margin: 6px 0 0 7px;
+	padding: 0;
+	background: transparent;
+	border: 0;
+	outline: 0;
+	-webkit-appearance: none;
+}
+.submitSpan{
+	width: auto;
+	height: auto;
+	border-bottom: 1px solid transparent;
+
+	display: inline-block;
+	background-position: -120px -48px;
+	z-index: 0;
+	vertical-align: top;
+}
+form{
+
+	z-index: 100;
+}
+html,body{
+	height: 100%;
+}
+body, p, form, ul, li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+input, textarea, select, button {
+	text-rendering: auto;
+	color: initial;
+	letter-spacing: normal;
+	word-spacing: normal;
+	text-transform: none;
+	text-indent: 0px;
+	text-shadow: none;
+	display: inline-block;
+	text-align: start;
+	margin: 0em;
+	font: 400 13.3333px Arial;
+}
+
