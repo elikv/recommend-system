@@ -15,6 +15,7 @@ public interface UserLabelRepository extends CrudRepository<UserLabel, String> {
 
     UserLabel findByUserIdAndLabelId(Long userId,String LabelId);
 
+
     void deleteByUserId(Long UserId);
 
 

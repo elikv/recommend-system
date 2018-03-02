@@ -1,10 +1,12 @@
 package com.elikv.recommendsystem.controller;
 
+import com.alibaba.druid.util.StringUtils;
 import com.elikv.recommendsystem.model.*;
 import com.elikv.recommendsystem.repository.LabelRepository;
 import com.elikv.recommendsystem.repository.UserLabelRepository;
 import com.elikv.recommendsystem.repository.UserLabelShopRepository;
 import com.elikv.recommendsystem.repository.UserRepository;
+import com.elikv.recommendsystem.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,10 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author : elikv
@@ -35,15 +34,16 @@ public class ApiController
     private UserLabelShopRepository userLabelShopRepository;
     @Autowired
     private LabelRepository labelRepository;
+    @Autowired
+    private UserServiceImpl userService;
 
     /**
      * @param allLabel 所有的标签名  以分号分隔
      * @param activeLabel 选中的标签
      * @param activeShopId 选中门店
-     * @param addOrCancel 收藏/取消收藏
      */
     @RequestMapping(value = "addOrModifyLabel",method = RequestMethod.POST)
-    public ApiResponse addLabel(HttpSession session,String allLabel,String activeLabel,int activeShopId,String addOrCancel){
+    public ApiResponse addLabel(HttpSession session,String allLabel,String activeLabel,int activeShopId){
         if(session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY)==null){
             return ApiResponse.ofMessage(50000,"请先登录");
         }
@@ -52,9 +52,11 @@ public class ApiController
         User byName = userRepository.findByName(username);
         Long userId = byName.getId();
         userLabelRepository.deleteByUserId(userId);
-
-        String[] split = allLabel.split(";");
-        List<String> allLabels = Arrays.asList(split);
+        List<String> allLabels = new ArrayList<String>();
+        if(!StringUtils.isEmpty(allLabel)){
+            String[] split = allLabel.split(",");
+            allLabels = Arrays.asList(split);
+        }
         //标签
         for (String label : allLabels) {
             UserLabel userLabel = new UserLabel();
@@ -88,25 +90,31 @@ public class ApiController
         userLabelShop.setShopId(activeShopId);
         userLabelShop.setUserLabelId(byUserIdAndLabelId.getId());
         UserLabelShop byUserIdAndLebelIdAnAndShopId = userLabelShopRepository.findByUserLabelIdAndShopId( activeLabelId, activeShopId);
-        String message ="";
-        if("true".equals(addOrCancel)){
-            if(byUserIdAndLebelIdAnAndShopId!=null){
+        String message ="操作失败";
+        if(byUserIdAndLebelIdAnAndShopId!=null){
                 return ApiResponse.ofMessage(500,"该门店已收藏");
             }
             message = "收藏成功";
             userLabelShopRepository.save(userLabelShop);
-        }else {
-            if (byUserIdAndLebelIdAnAndShopId != null) {
-                return ApiResponse.ofMessage(500, "该门店还未收藏");
-            }
-            userLabelShopRepository.deleteByUserLabelIdAndShopId(activeLabelId, activeShopId);
-            userLabelShopRepository.save(userLabelShop);
-            message = "取消收藏成功";
-        }
+//        if("true".equals(addOrCancel)){
+//            if(byUserIdAndLebelIdAnAndShopId!=null){
+//                return ApiResponse.ofMessage(500,"该门店已收藏");
+//            }
+//            message = "收藏成功";
+//            userLabelShopRepository.save(userLabelShop);
+//        }else {
+//            if (byUserIdAndLebelIdAnAndShopId != null) {
+//                return ApiResponse.ofMessage(500, "该门店还未收藏");
+//            }
+//            userLabelShopRepository.deleteByUserLabelIdAndShopId(activeLabelId, activeShopId);
+//            userLabelShopRepository.save(userLabelShop);
+//            message = "取消收藏成功";
+//        }
         return ApiResponse.ofMessage(200,message);
     }
 
-    @RequestMapping("/findAllLabels")
+
+    @RequestMapping(value="/findAllLabels",method = RequestMethod.POST)
     public ApiResponse findAllLabels(HttpSession session){
         SecurityContext context = SecurityContextHolder.getContext();
         String username = context.getAuthentication().getName();
@@ -117,6 +125,25 @@ public class ApiController
         Long userId = byName.getId();
         List<UserLabel> byUserId = userLabelRepository.findByUserId(userId);
         return ApiResponse.ofSuccess(byUserId);
+    }
+
+    @RequestMapping(value="/notCollection",method = RequestMethod.POST)
+    public ApiResponse notCollection(int shopId){
+        SecurityContext context = SecurityContextHolder.getContext();
+        String username = context.getAuthentication().getName();
+        User byName = userRepository.findByName(username);
+        if(byName==null){
+            return ApiResponse.ofMessage(50000,"请先登录");
+        }
+        Long userId = byName.getId();
+        String userLabelId = userService.getUserLabelId(shopId, userId);
+        String[] split = userLabelId.split(",");
+        for (String s : split) {
+            userLabelShopRepository.deleteByUserLabelIdAndShopId(s,shopId);
+        }
+
+        return ApiResponse.ofSuccess(null);
+
     }
 
 

@@ -13,7 +13,7 @@ import java.util.Date;
  */
 @Data
 @Entity
-@Table(name = "label")
+@Table(name = "t_label")
 public class Label {
     @Id
     @Column(name = "labelId")

@@ -1,19 +1,14 @@
 package com.elikv.recommendsystem.service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import com.alibaba.druid.util.StringUtils;
 import com.elikv.recommendsystem.dto.UserDTO;
-import com.elikv.recommendsystem.model.ApiResponse;
-import com.elikv.recommendsystem.model.Role;
-import com.elikv.recommendsystem.model.ServiceResult;
-import com.elikv.recommendsystem.model.User;
+import com.elikv.recommendsystem.model.*;
 import com.elikv.recommendsystem.repository.RoleRepository;
+import com.elikv.recommendsystem.repository.UserLabelRepository;
+import com.elikv.recommendsystem.repository.UserLabelShopRepository;
 import com.elikv.recommendsystem.repository.UserRepository;
 import com.elikv.recommendsystem.utils.LoginUserUtil;
 import com.google.common.collect.Lists;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,12 +18,17 @@ import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 
@@ -39,6 +39,10 @@ import javax.servlet.http.HttpServletRequest;
 public class UserServiceImpl  {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserLabelRepository userLabelRepository;
+    @Autowired
+    private UserLabelShopRepository userLabelShopRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -176,4 +180,60 @@ public class UserServiceImpl  {
         }
         return ServiceResult.success();
     }
+
+    /**
+     * @return ArrayList<String>shopId
+     * 通过用户找他标签下的所有餐厅
+     */
+    public List<String> findShopIdByCurrentUser (){
+        SecurityContext context = SecurityContextHolder.getContext();
+        String username = context.getAuthentication().getName();
+        User byName = userRepository.findByName(username);
+        List<String> shopIds = new ArrayList<String>();
+        if(byName!=null){
+            List<UserLabel> byUserId = userLabelRepository.findByUserId(byName.getId());
+            for (UserLabel userLabel : byUserId) {
+                String id = userLabel.getId();
+                List<UserLabelShop> byUserLabelId = userLabelShopRepository.findByUserLabelId(id);
+                for (UserLabelShop userLabelShop : byUserLabelId) {
+                    shopIds.add(String.valueOf(userLabelShop.getShopId()));
+                }
+            }
+        }
+        return shopIds;
+    }
+
+    /**
+     * 通过userId和shopId找到userLabelId
+     * 若有多个，以 , 分割
+     */
+    public String getUserLabelId(int shopId,Long userId){
+        String matchKey = "";
+        List<UserLabel> byUserId = userLabelRepository.findByUserId(userId);
+        List<UserLabelShop> byShopId = userLabelShopRepository.findByShopId(shopId);
+        for (UserLabelShop userLabelShop : byShopId) {
+            String userLabelId = userLabelShop.getUserLabelId();
+
+            for (UserLabel userLabel : byUserId) {
+                if(StringUtils.equals(userLabelId,userLabel.getId())){
+                    if(org.springframework.util.StringUtils.isEmpty(matchKey)){
+                        matchKey = userLabelId;
+                    }else{
+                        matchKey =matchKey+ ","+userLabelId;
+                    }
+                }
+            }
+        }
+        return  matchKey;
+    }
+
+    public static void main(String[] args) {
+        String a ="";
+        String[] split = a.split(",");
+        System.out.println("123"+split);
+    }
+
 }
+
+
+

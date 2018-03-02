@@ -2,7 +2,9 @@ package com.elikv.recommendsystem.controller;
 
 
 import com.elikv.recommendsystem.model.RankShopInfo;
+import com.elikv.recommendsystem.repository.UserRepository;
 import com.elikv.recommendsystem.service.RankServiceImpl;
+import com.elikv.recommendsystem.service.UserServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,11 @@ import java.util.List;
 public class NewCoolingController {
 	@Autowired
 	private RankServiceImpl rankService;
+	@Autowired
+	private UserRepository userRepository;
+	@Autowired
+	private UserServiceImpl userService;
+
 	
 	
 	@RequestMapping(value="/newCooling" ,method = RequestMethod.GET)
@@ -32,6 +39,9 @@ public class NewCoolingController {
 		PageInfo<RankShopInfo> page= new PageInfo<RankShopInfo>(findRecommend);
 		model.addAttribute("pageInfo", page);
 		model.addAttribute("data", findRecommend);
+		//添加用户标签门店
+		List<String> shopIdByCurrentUser = userService.findShopIdByCurrentUser();
+		model.addAttribute("shopIds",shopIdByCurrentUser);
 		return "newtonCooling/index";
 	} 
 	

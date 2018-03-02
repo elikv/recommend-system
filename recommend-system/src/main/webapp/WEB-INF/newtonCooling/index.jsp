@@ -58,7 +58,9 @@
        	 	</li>
        	 	
         	<br>
-        	<button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal" id="collection" v-on:click="changeTag">加入收藏</button>
+        	<button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal" class="collection" v-on:click="changeTag(${list.shopId})">加入收藏</button>
+				<input type="hidden" value="${list.shopId}" class="shopIdHidden">
+				<button type="button" class="btn btn-info btn-sm notCollection"   >取消收藏</button>
     		</ul>
 		</div>
 		</div>
@@ -100,22 +102,6 @@
                         <el-button v-else class="button-new-tag" size="small" @click="showInput">+  新增标签</el-button>
 
                     <br><br>
-                    <!-- <label><input name="tags" type="checkbox" value="" />
-                     <button class="btn btn-info btn-sm taglocation">
-                     <span type="checkbox"class="glyphicon glyphicon-tag">标签2</button>
-                     </label>
-                    <label><input name="tags" type="checkbox" value="" />
-                        <button class="btn btn-info btn-sm taglocation">
-                        <span type="checkbox"class="glyphicon glyphicon-tag">标签3</button>
-                    </label>
-                    <label><input name="tags" type="checkbox" value="" />
-                        <button class="btn btn-info btn-sm taglocation">
-                        <span type="checkbox"class="glyphicon glyphicon-tag">标签4</button>
-                    </label>
-                    <label><input name="tags" type="checkbox" value="" />
-                        <button class="btn btn-info btn-sm taglocation">
-                        <span type="checkbox"class="glyphicon glyphicon-tag">标签5</button>
-                     </label> -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭
@@ -123,6 +109,7 @@
                     <button type="button" class="btn btn-primary" data-dismiss="modal" id="submitLabel">
                         提交更改
                     </button>
+					<input type="hidden" value="" id="shopIdModel">
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
@@ -133,6 +120,7 @@
 <link rel="stylesheet" type="text/css" href="css/test.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/element-ui/2.2.0/theme-chalk/index.css">
 <script src="https://cdn.bootcss.com/vue/2.5.13/vue.js"></script>
+
 <script src="https://cdn.bootcss.com/element-ui/2.2.0/index.js"></script>
 <script type="text/javascript" src="js/test.js"></script>
 <script src="https://cdn.bootcss.com/layer/3.1.0/layer.js"></script>
@@ -141,6 +129,10 @@ console.log("我进来辣！")
 console.log(Main.data().dynamicTags);
 //切换 sidebar active
 $(function(){
+    //初始取消收藏隐形
+    $(".notCollection").hide();
+
+    //导航栏动态添加active
 	$('.list-group-item').removeClass("active");
 	$('.list-group-item').each(function(){
 		var context = location.href.split('newCooling');
@@ -154,12 +146,78 @@ $(function(){
 			}
 		}
 	});
+<c:forEach items="${shopIds}" var="shopId">
+    hideOrShow(${shopId});
+</c:forEach>
+});
+//点击取消收藏
+$(document).on("click",".notCollection",function () {
+    var that = $(this);
+	$.ajax({
+		url:"api/notCollection",
+		type:"POST",
+		data:{
+		    shopId:that.prev().val()
+		},
+		success:function(e){
+		    if(e.code=='200'){
+                layer.msg("取消收藏成功",{time:1000,shade: [0.3, '#000']});
+                that.prev().prev().show();
+                that.hide();
 
+			}else {
+                layer.msg("操作失败，请先登录",{time:1000,shade: [0.3, '#000']});
+			}
+		}
+	})
 });
 
-
+//收藏按钮-提交
 $('#submitLabel').click(function(){
-    layer.msg("收藏成功",{time:1000,shade: [0.3, '#000']});
+    var activrLabelName="";
+    var allLabel="";
+    $('.el-tag').each(function(){
+        if(allLabel==""){
+            allLabel = $(this).text().trim();
+		}else{
+            allLabel = allLabel +","+$(this).text().trim();
+		}
+
+            if($(this).attr("data-active")=="true"){
+                if(activrLabelName==""){
+                    activrLabelName = $(this).text().trim();
+                }else{
+                    activrLabelName = activrLabelName + ","+$(this).text().trim();
+                }
+        }
+	});
+    if(activrLabelName==""){
+        layer.msg("请选择你要收藏的标签",{time:1000,shade: [0.3, '#000']});
+        $('#submitLabel').removeAttr("data-dismiss");
+	}else {
+        $('#submitLabel').attr("data-dismiss","modal");
+        var shopId = $("#shopIdModel").val();
+        //String allLabel,String activeLabel,int activeShopId
+        $.ajax({
+			url:"api/addOrModifyLabel",
+			data:{
+                allLabel:allLabel,
+                activeLabel:activrLabelName,
+                activeShopId:shopId
+			},
+			type:"POST",
+			success:function (e) {
+				if(e.code=='500'){
+                    layer.msg("该门店已收藏",{time:1000,shade: [0.3, '#000']});
+				}else {
+                    layer.msg("收藏成功",{time:1000,shade: [0.3, '#000']});
+                    hideOrShow(shopId);
+
+				}
+            }
+		});
+	}
+
 
 })
 
@@ -246,5 +304,16 @@ $(".poor-4").click(function(){
         console.log(baseUrl+'\&start='+start+'\&end='+end);
         return baseUrl+'\&start='+start+'\&end='+end;
 	}
+	//根据shopid来控制收藏/取消收藏按钮
+	function hideOrShow(shopId){
+		$(".shopIdHidden").each(function(){
+		    var that = $(this);
+		    if(that.val()==shopId){
+		        that.prev().hide();
+		        that.next().show();
+			}
+		})
+	}
+
 </script>
 <script type="text/javascript" color="0,0,0" zindex="-1" opacity="0.5" count="99" src="https://cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
