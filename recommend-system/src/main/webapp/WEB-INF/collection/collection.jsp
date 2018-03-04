@@ -62,14 +62,13 @@
                     <br>
 
 
-
-                    <el-tag :key="tag" v-for="tag in dynamicTags" closable :disable-transitions="false" @close="handleClose2(tag)">
+                    <el-tag :key="tag" v-for="tag in dynamicTags" closable :disable-transitions="false" @close="handleClose(tag)">
                         {{tag}}
                     </el-tag>
-                    <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput2" size="small" @keyup.enter.native="handleInputConfirm2" @blur="handleInputConfirm2">
+                    <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm">
                     </el-input>
-                    <el-button v-else class="button-new-tag" size="small" @click="showInput2">+  新增标签</el-button>
-                    <hr>
+                    <el-button v-else class="button-new-tag" size="small" @click="showInput">+  新增标签</el-button>
+                        <hr>
                     <!--         <a href="">+新增标签</a> -->
                     <c:forEach items="${data}" var="list" varStatus="status">
                         <c:if test="${status.index}%2==0">
@@ -79,7 +78,7 @@
                             <li class="odd2">
                         </c:if>
                         <div class="txtcolor">
-                            <input type="hidden" value="${list.shopId}" class="shopIdHidden">
+
                             <a class="title2">${list.shopName}</a>
                             <div class="tags-box">
                             </div>
@@ -93,7 +92,7 @@
                                     <p>人均:${list.avgPrice}</p>
                                     <a class="label label-primary" data-toggle="modal" data-target="#myModal"  v-on:click="changeTag(${list.shopId})">编辑</a>
                                     <a class="label label-danger notCollection" >删除</a>
-
+                                    <input type="hidden" value="${list.shopId}" class="shopIdHidden">
                                 </div>
                             </div>
                         </div>
@@ -181,10 +180,25 @@
 <script src="https://cdn.bootcss.com/layer/3.1.0/layer.js"></script>
 <script type="text/javascript">
 
+    $(document).on("click",".modal-body .el-tag",function(){
+// box-shadow: rgb(245, 108, 1) 1px 1px 10px;
+        if($(this).attr("data-active")=="true"){
+            $(this).css("box-shadow","");
+            $(this).css("background-color","")
+            $(this).attr("data-active","");
+        }else{
+            $(this).css("box-shadow","rgb(245, 108, 1) 1px 1px 10px");
+            $(this).css("background-color","rgb(35,98,152)")
+            $(this).attr("data-active","true");
+        }
+
+    });
+
+
     //点击标签转到对应门店
     $(document).on("click",".leftcolor .el-tag",function(){
         var labelName = $(this).text().trim();
-        window.location.href("user/collection?"+labelName);
+        window.location.href ="collection?labelName="+labelName;
     })
 
     //编辑按钮-提交
@@ -214,12 +228,11 @@
             var shopId = $("#shopIdModel").val();
             //String allLabel,String activeLabel,int activeShopId
             $.ajax({
-                url:"api/addOrModifyLabel",
+                url:"/recommend-system/api/addOrModifyLabel",
                 data:{
                     allLabel:allLabel,
                     activeLabel:activrLabelName,
-                    activeShopId:shopId,
-                    modifyStatus:"true"
+                    activeShopId:shopId
                 },
                 type:"POST",
                 success:function (e) {

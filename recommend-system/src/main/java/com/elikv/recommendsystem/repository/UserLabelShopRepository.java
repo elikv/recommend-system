@@ -20,5 +20,7 @@ public interface UserLabelShopRepository extends CrudRepository<UserLabelShop, S
 
     public  void deleteByUserLabelIdAndShopId(String userLabelId,int shopId);
 
+    public  void deleteByUserLabelId(String userLabelId);
+
 
 }

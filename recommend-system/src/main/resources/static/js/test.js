@@ -5,18 +5,34 @@ var Main = {
     data() {
 
       return {
-        dynamicTags: ['标签一', '标签二', '标签三'],
-        inputVisible: false,
-        inputValue: ''
+          dynamicTags: [],
+          inputVisible: false,
+          inputValue: '',
+
       };
     },
-
+    mounted:function () {
+        var that = this;
+        $.ajax({
+            url:'/recommend-system/api/findAllLabels',
+            type:'POST',
+            success(data){
+                if(data.code=='50000'){
+                    return false;
+                }else if(data.code=='200'){
+                    tag = data.data;
+                    that.dynamicTags = tag;
+                    console.log(that.dynamicTags);
+                }
+            }
+        });
+    },
     methods: {
         changeTag(shopId){
           var tag = new Array();
             var that = this;
             $.ajax({
-                url:'api/findAllLabels',
+                url:'/recommend-system/api/findAllLabels',
                 type:'POST',
                 success(data){
                     if(data.code=='50000'){
@@ -30,10 +46,22 @@ var Main = {
                     }
                 }
             });
-            $("#shopIdModel").val(shopId);
+            if(shopId){
+                $("#shopIdModel").val(shopId);
+            }
+
         },
       handleClose(tag) {
         this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+          $.ajax({
+              url:"/recommend-system/api/deleteLabel",
+              data:{
+                  labelName:tag
+              },
+              type:"POST",
+              success:function (e) {
+              }
+          })
       },
 
       showInput() {
@@ -47,6 +75,15 @@ var Main = {
         let inputValue = this.inputValue;
         if (inputValue) {
           this.dynamicTags.push(inputValue);
+          $.ajax({
+              url:'/recommend-system/api/addLabel',
+              data:{
+                  labelName:inputValue
+              },
+              type:"POST",
+              success:function (e) {
+              }
+          })
         }
         this.inputVisible = false;
         this.inputValue = '';
