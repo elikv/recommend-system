@@ -39,7 +39,7 @@ public class NewCoolingController {
 		PageInfo<RankShopInfo> page= new PageInfo<RankShopInfo>(findRecommend);
 		model.addAttribute("pageInfo", page);
 		model.addAttribute("data", findRecommend);
-		//添加用户标签门店
+		//添加用户标签门店  判断收藏/取消收藏  按钮
 		List<String> shopIdByCurrentUser = userService.findShopIdByCurrentUser();
 		model.addAttribute("shopIds",shopIdByCurrentUser);
 		return "newtonCooling/index";

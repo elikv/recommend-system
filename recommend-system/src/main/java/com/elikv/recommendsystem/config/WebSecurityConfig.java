@@ -1,6 +1,5 @@
 package com.elikv.recommendsystem.config;
 
-import com.elikv.recommendsystem.security.AuthFilter;
 import com.elikv.recommendsystem.security.AuthProvider;
 import com.elikv.recommendsystem.security.LoginAuthFailHandler;
 import com.elikv.recommendsystem.security.LoginUrlEntryPoint;
@@ -111,6 +110,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         //解决静态资源被拦截的问题
-        web.ignoring().antMatchers("/css/**");
+        web.ignoring().antMatchers("css/**");
+        web.ignoring().antMatchers("js/**");
     }
 }

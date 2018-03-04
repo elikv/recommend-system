@@ -1,12 +1,5 @@
 package com.elikv.recommendsystem.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.elikv.recommendsystem.dao.RankShopDao;
 import com.elikv.recommendsystem.model.RankShopInfo;
 import org.slf4j.Logger;
@@ -15,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 @Service
 public class RankServiceImpl {
@@ -75,6 +70,23 @@ public class RankServiceImpl {
 			map.put("start", start);
 			map.put("end", end);
 		List<RankShopInfo> list = rankShopDao.findNewtonCooling(map);
+		return list;
+	}
+
+	/**
+	 * 寻找指定id下的餐厅数据
+	 * @param category
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public List<RankShopInfo>findLabelShop(String category,String start, String end,List<String>shopIds){
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("category", category);
+		map.put("start", start);
+		map.put("end", end);
+		map.put("shopIds",shopIds);
+		List<RankShopInfo> list = rankShopDao.findLabelShop(map);
 		return list;
 	}
 	

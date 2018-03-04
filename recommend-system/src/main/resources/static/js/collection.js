@@ -1,4 +1,4 @@
-// test.js
+// 我的收藏 标签处理js
 
 var Main = {
 
@@ -12,8 +12,8 @@ var Main = {
     },
 
     methods: {
-        changeTag(shopId){
-          var tag = new Array();
+        changeTag2(shopId){
+            var tag = new Array();
             var that = this;
             $.ajax({
                 url:'api/findAllLabels',
@@ -32,18 +32,18 @@ var Main = {
             });
             $("#shopIdModel").val(shopId);
         },
-      handleClose(tag) {
+      handleClose2(tag) {
         this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
       },
 
-      showInput() {
+      showInput2() {
         this.inputVisible = true;
         this.$nextTick(_ => {
           this.$refs.saveTagInput.$refs.input.focus();
         });
       },
 
-      handleInputConfirm() {
+      handleInputConfirm2() {
         let inputValue = this.inputValue;
         if (inputValue) {
           this.dynamicTags.push(inputValue);

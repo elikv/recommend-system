@@ -1,12 +1,12 @@
 package com.elikv.recommendsystem.dao;
 
 
-import java.util.List;
-import java.util.Map;
-
 import com.elikv.recommendsystem.model.RankShopInfo;
 import com.elikv.recommendsystem.model.ShopIdRankTimeScoreEntity;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Map;
 
 
 
@@ -42,5 +42,12 @@ public interface RankShopDao {
      * 显示数据 牛顿冷却定律排序
      */
     public List<RankShopInfo>findNewtonCooling(Map<String, Object> map);
+
+    /**
+     * 根据指定id 拿到数据
+     * @param map
+     * @return
+     */
+    public List<RankShopInfo>findLabelShop(Map<String, Object> map);
    
 }

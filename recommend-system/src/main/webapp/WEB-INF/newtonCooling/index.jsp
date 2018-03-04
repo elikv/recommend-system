@@ -212,6 +212,7 @@ $('#submitLabel').click(function(){
 				}else {
                     layer.msg("收藏成功",{time:1000,shade: [0.3, '#000']});
                     hideOrShow(shopId);
+                    backCss();
 
 				}
             }
@@ -219,7 +220,7 @@ $('#submitLabel').click(function(){
 	}
 
 
-})
+});
 
 //选中修改样式
 $(document).on("click",".el-tag",function(){
@@ -234,7 +235,15 @@ $(document).on("click",".el-tag",function(){
         $(this).attr("data-active","true");
     }
 
-})
+});
+
+function backCss() {
+	$(".el-tag").each(function(){
+        $(this).css("box-shadow","");
+        $(this).css("background-color","")
+        $(this).attr("data-active","");
+	});
+}
 
 //给botton 添加动态地址
 $(".priceSort").blur(function(){

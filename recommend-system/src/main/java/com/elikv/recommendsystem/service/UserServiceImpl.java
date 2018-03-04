@@ -3,10 +3,7 @@ package com.elikv.recommendsystem.service;
 import com.alibaba.druid.util.StringUtils;
 import com.elikv.recommendsystem.dto.UserDTO;
 import com.elikv.recommendsystem.model.*;
-import com.elikv.recommendsystem.repository.RoleRepository;
-import com.elikv.recommendsystem.repository.UserLabelRepository;
-import com.elikv.recommendsystem.repository.UserLabelShopRepository;
-import com.elikv.recommendsystem.repository.UserRepository;
+import com.elikv.recommendsystem.repository.*;
 import com.elikv.recommendsystem.utils.LoginUserUtil;
 import com.google.common.collect.Lists;
 import org.springframework.beans.BeanUtils;
@@ -46,6 +43,8 @@ public class UserServiceImpl  {
 
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private LabelRepository labelRepository;
 
 
     @Autowired
@@ -186,10 +185,9 @@ public class UserServiceImpl  {
      * 通过用户找他标签下的所有餐厅
      */
     public List<String> findShopIdByCurrentUser (){
-        SecurityContext context = SecurityContextHolder.getContext();
-        String username = context.getAuthentication().getName();
-        User byName = userRepository.findByName(username);
+
         List<String> shopIds = new ArrayList<String>();
+        User byName =  currentUser();
         if(byName!=null){
             List<UserLabel> byUserId = userLabelRepository.findByUserId(byName.getId());
             for (UserLabel userLabel : byUserId) {
@@ -201,6 +199,38 @@ public class UserServiceImpl  {
             }
         }
         return shopIds;
+    }
+
+    /**
+     * 通过当前用户，标签名，获取所有餐厅
+     * @return
+     */
+    public List<String> findShopIdByCurrentUserAndLabelName (String labelName) throws Exception {
+        Label byLabelName = labelRepository.findByLabelName(labelName);
+        if(byLabelName==null){
+            throw new Exception(labelName+"无此标签");
+        }
+        List<String> shopIds = new ArrayList<String>();
+        User byName =  currentUser();
+        if(byName!=null){
+            UserLabel byUserId = userLabelRepository.findByUserIdAndLabelId(byName.getId(),byLabelName.getLabelId());
+                String id = byUserId.getId();
+                List<UserLabelShop> byUserLabelId = userLabelShopRepository.findByUserLabelId(id);
+                for (UserLabelShop userLabelShop : byUserLabelId) {
+                    shopIds.add(String.valueOf(userLabelShop.getShopId()));
+                }
+        }
+        return shopIds;
+    }
+
+
+
+
+    public User currentUser(){
+        SecurityContext context = SecurityContextHolder.getContext();
+        String username = context.getAuthentication().getName();
+        User byName = userRepository.findByName(username);
+        return byName;
     }
 
     /**

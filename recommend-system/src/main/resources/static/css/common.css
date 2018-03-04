@@ -180,3 +180,94 @@ input, textarea, select, button {
 	font: 400 13.3333px Arial;
 }
 
+
+
+
+/* 收藏页面2018-3-4 */
+
+/*-------------------------------登陆--------------------------------------*/
+
+.container-small{
+	max-width: 500px;
+}
+
+.container container-small .btn-primary{
+	background-color: orange;
+	border-color: orange;
+}
+/*---------------------------------收藏------------------------------------------*/
+.collection img{
+	display: block;
+	max-width: 90%;
+	min-width:90%;
+	img-circle;
+}
+/*两边颜色*/
+.sidecolor{
+	background-color: rgba(90,120,250,0.1);
+}
+/*头像区背景色*/
+.titlecolor{
+	background-color: rgba(90,120,250,0.1);
+}
+/*左边背景色*/
+.leftcolor{
+	background-color: rgba(90,120,250,0.15);
+}
+/*右边背景色*/
+.rightcolor{
+	background-color: rgba(90,120,250,0.17);
+}
+/*用户名位置*/
+.username{
+	padding-top: 20px;
+}
+/*左边下划线*/
+.col-sm-8 .leftcolor hr{
+	margin-top:10px;
+	margin-bottom:10px;
+	max-width: 100%;
+	color:#0000ff;
+	size:2;
+}
+
+/*去除点*/
+li {list-style-type:none;}
+
+.odd1{
+	background-color: rgba(90,120,250,0.1);
+}
+.odd2{
+	background-color: rgba(90,120,250,0.05);
+}
+/*标题位置*/
+.title2{
+	margin-left: 100PX;
+}
+.info2{
+	margin-left: 50PX;
+	margin-top: 5px;
+}
+.fr{
+	float:right;
+}
+/*.label{
+	font-size: 100%;
+	line-height:2;
+}*/
+a.btn btn-info btn-sm {
+	margin-bottom:10px;
+	margin-top:10px;
+}
+/*标签间距*/
+.taglocation{
+	margin-right:1px;
+	margin-left: 5px;
+	margin-bottom: 10px;
+}
+/*模态框位置*/
+.modal.fade.in {
+	top: 30%;
+}
+
+

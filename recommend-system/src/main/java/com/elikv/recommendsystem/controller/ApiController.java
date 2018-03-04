@@ -6,11 +6,13 @@ import com.elikv.recommendsystem.repository.LabelRepository;
 import com.elikv.recommendsystem.repository.UserLabelRepository;
 import com.elikv.recommendsystem.repository.UserLabelShopRepository;
 import com.elikv.recommendsystem.repository.UserRepository;
+import com.elikv.recommendsystem.service.LabelServiceImpl;
 import com.elikv.recommendsystem.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,14 +38,18 @@ public class ApiController
     private LabelRepository labelRepository;
     @Autowired
     private UserServiceImpl userService;
+    @Autowired
+    private LabelServiceImpl labelService;
 
     /**
      * @param allLabel 所有的标签名  以分号分隔
      * @param activeLabel 选中的标签
      * @param activeShopId 选中门店
+     * @param modifyStatus 是否改变餐厅-标签关系
      */
+    @Transactional(rollbackFor = Throwable.class)
     @RequestMapping(value = "addOrModifyLabel",method = RequestMethod.POST)
-    public ApiResponse addLabel(HttpSession session,String allLabel,String activeLabel,int activeShopId){
+    public ApiResponse addLabel(HttpSession session,String allLabel,String activeLabel,int activeShopId,String modifyStatus){
         if(session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY)==null){
             return ApiResponse.ofMessage(50000,"请先登录");
         }
@@ -91,7 +97,7 @@ public class ApiController
         userLabelShop.setUserLabelId(byUserIdAndLabelId.getId());
         UserLabelShop byUserIdAndLebelIdAnAndShopId = userLabelShopRepository.findByUserLabelIdAndShopId( activeLabelId, activeShopId);
         String message ="操作失败";
-        if(byUserIdAndLebelIdAnAndShopId!=null){
+        if(!StringUtils.equals(modifyStatus,"true")&&byUserIdAndLebelIdAnAndShopId!=null){
                 return ApiResponse.ofMessage(500,"该门店已收藏");
             }
             message = "收藏成功";
@@ -122,11 +128,10 @@ public class ApiController
         if(byName==null){
             return ApiResponse.ofMessage(50000,"请先登录");
         }
-        Long userId = byName.getId();
-        List<UserLabel> byUserId = userLabelRepository.findByUserId(userId);
-        return ApiResponse.ofSuccess(byUserId);
+        List<String> allLabels = labelService.findAllLabels();
+        return ApiResponse.ofSuccess(allLabels);
     }
-
+    @Transactional(rollbackFor = Throwable.class)
     @RequestMapping(value="/notCollection",method = RequestMethod.POST)
     public ApiResponse notCollection(int shopId){
         SecurityContext context = SecurityContextHolder.getContext();
@@ -145,6 +150,8 @@ public class ApiController
         return ApiResponse.ofSuccess(null);
 
     }
+
+
 
 
 }
