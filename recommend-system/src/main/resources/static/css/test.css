@@ -3,12 +3,12 @@
 /*@import url("css/elementui.css");*/
 
 .el-tag + .el-tag {
-/*    margin-left: 10px;*/
+    margin-left: 5px!important;
     margin-top: 5px;
     margin-bottom: 5px;
   }
   .button-new-tag {
-    margin-left: 10px;
+    margin-left: 5px!important;
     height: 32px;
     line-height: 30px;
     padding-top: 0;

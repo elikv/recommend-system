@@ -5,7 +5,7 @@
 </div>
 <div class="side-bar-card">
     <center>
-        <a href="" class="poor-0">我是穷比</a>
+        <a href="" class="poor-0">我是穷神</a>
         <br>
         <br>
         <a href="" class="poor-1">我是学生</a>

@@ -12,7 +12,9 @@
 	<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.css" rel="stylesheet">
 	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="${APP_PATH}/WEB-INF/classes/static/css/common.css">
+	<link rel="stylesheet" type="text/css" href="${APP_PATH}/WEB-INF/classes/static/css/layui.css">
     <link rel="stylesheet" type="text/css" href="css/common.css">
+	<link rel="stylesheet" type="text/css" href="css/layui.css">
 </head>
 <body style="background-color:#f5f5f5;">
 	<!-- 导航栏-->

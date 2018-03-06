@@ -12,32 +12,59 @@
 	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script src="https://cdn.bootcss.com/layer/3.1.0/layer.js"></script>
 	<link rel="stylesheet" type="text/css" href="${APP_PATH}/WEB-INF/classes/static/css/common.css">
+	<link rel="stylesheet" type="text/css" href="${APP_PATH}/WEB-INF/classes/static/css/login.css">
     <link rel="stylesheet" type="text/css" href="css/common.css">
+	<link rel="stylesheet" type="text/css" href="css/login.css">
+
 </head>
-<body>
+<body style="background-color:#f5f5f5;">
 <!-- 导航栏-->
 	<%@include file="include/navigator.jsp" %>
 
-	<div class="container container-small">
-		<form method="post" action="${pageContext.request.contextPath}/signup">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-offset-3 col-md-6">
+
+		<form method="post" class="form-horizontal" action="${pageContext.request.contextPath}/signup">
+			<span class="tittlesize">用户注册</span>
 			<div class="form-group">
 				<label>用户名</label>
-				<input type="text" name="username" id = 'username'class="form-control">
+				<input type="text" name="username" id = 'username'class="form-control"placeholder="请输入用户名或电子邮箱">
 				<span class="error-message" style="color: red;"/>
+				<i class="fa fa-user"></i>
 			</div>
+			<span style="color:red;display: none;" class="tips"></span>
+			<span style="display: none;" class=" glyphicon glyphicon-remove"></span>
+			<span style="display: none;" class="glyphicon glyphicon-ok "></span>
 			<div class="form-group">
 				<label>密码</label>
-				<input type="password" id='password'name="password" class="form-control">
+				<input type="password" id='password'name="password" class="form-control" placeholder="请输入密码">
 			</div>
-						<div class="form-group">
+			<span style="color:red;display: none;" class="tips"></span>
+			<span style="display: none;" class=" glyphicon glyphicon-remove"></span>
+			<span style="display: none;" class="glyphicon glyphicon-ok "></span>
+			<div class="form-group">
 				<label>确认密码</label>
-				<input type="password"  id='password2' class="form-control">
+				<input type="password"  id='password2' class="form-control" placeholder="请再次输入密码">
 			</div>
-			<button type="submit" id='submit' class="btn btn-primary btn-block">注册</button>
+			<span style="color:red;display: none;" class="tips"></span>
+			<span style="display: none;" class=" glyphicon glyphicon-remove"></span>
+			<span style="display: none;" class="glyphicon glyphicon-ok "></span>
+			<div class="form-group">
+				<button type="submit" id='submit' class="btn btn-primary btn-block">注册</button>
+			</div>
+			<div class="form-group">
+				<input value="重置" id="reset" class="btn btn-danger btn-block" style="background-color: orangered" type="reset">
+			</div>
+
 		</form>
+	</div>
+		</div>
 	</div>
 </body>
 </html>
+<script type="text/javascript" src="${APP_PATH}/WEB-INF/classes/static/js/sign.js"></script>
+<script type="text/javascript" src="js/sign.js"></script>
 
 <script type="text/javascript">
 	console.log("我进来拉");
@@ -67,4 +94,6 @@
 		}
 		)
 	})
+
+
 </script>

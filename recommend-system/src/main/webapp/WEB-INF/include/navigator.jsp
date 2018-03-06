@@ -15,21 +15,21 @@
             <a href="${pageContext.request.contextPath}/newCooling" class="navbar-brand"></a>
         </div>
         <ul class="nav navbar-nav ">
-            <li><a class="navwordsize" href="${pageContext.request.contextPath}/newCooling">首页</a></li>
-            <li><a class="navwordsize" href="${pageContext.request.contextPath}/recommend">上榜次数排序</a></li>
+            <li><a class="navwordsize glyphicon glyphicon-home" href="${pageContext.request.contextPath}/newCooling">首页</a></li>
+            <li><a class="navwordsize glyphicon glyphicon-thumbs-up" href="${pageContext.request.contextPath}/recommend">上榜次数排序</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <input type="hidden" value="${sessionScope.SPRING_SECURITY_CONTEXT.authentication.principal.username}">
             <c:if test="${sessionScope==null || sessionScope.SPRING_SECURITY_CONTEXT==null}">
-                <li><a href="${pageContext.request.contextPath}/user/login">登陆</a></li>
+                <li><a class="glyphicon glyphicon-ok" href="${pageContext.request.contextPath}/user/login">登陆</a></li>
             </c:if>
             <c:if test="${sessionScope!=null && sessionScope.SPRING_SECURITY_CONTEXT!=null}">
-                <li><a href="#">${sessionScope.SPRING_SECURITY_CONTEXT.authentication.principal.username}</a></li>
-                <li><a href="${pageContext.request.contextPath}/logout">注销</a></li>
+                <li><a  href="#">${sessionScope.SPRING_SECURITY_CONTEXT.authentication.principal.username}</a></li>
+                <li><a class="glyphicon glyphicon-remove" href="${pageContext.request.contextPath}/logout">注销</a></li>
             </c:if>
 
-            <li><a href="${pageContext.request.contextPath}/signup2">注册</a></li>
-            <li><a href="${pageContext.request.contextPath}/user/collection">我的收藏</a></li>
+            <li><a class="glyphicon glyphicon-list-alt" href="${pageContext.request.contextPath}/signup2">注册</a></li>
+            <li><a class="glyphicon glyphicon-heart-empty" href="${pageContext.request.contextPath}/user/collection">我的收藏</a></li>
         </ul>
     </div>
 </div>

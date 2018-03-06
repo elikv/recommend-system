@@ -176,22 +176,33 @@
 
 <script src="https://cdn.bootcss.com/element-ui/2.2.0/index.js"></script>
 <script type="text/javascript" src="../js/test.js"></script>
-<script type="text/javascript" src="../js/collection.js"></script>
+<script type="text/javascript" src="${APP_PATH}/WEB-INF/classes/static/js/test.js"></script>
 <script src="https://cdn.bootcss.com/layer/3.1.0/layer.js"></script>
 <script type="text/javascript">
 
+
     $(document).on("click",".modal-body .el-tag",function(){
 // box-shadow: rgb(245, 108, 1) 1px 1px 10px;
+//        if($(this).attr("data-active")=="true"){
+//            $(this).css("box-shadow","");
+//            $(this).css("background-color","")
+//            $(this).attr("data-active","");
+//        }else{
+//            $(this).css("box-shadow","rgb(245, 108, 1) 1px 1px 10px");
+//            $(this).css("background-color","rgb(35,98,152)")
+//            $(this).attr("data-active","true");
+//        }
         if($(this).attr("data-active")=="true"){
             $(this).css("box-shadow","");
-            $(this).css("background-color","")
+            $(this).css("background-color","rgba(64,158,255,.1)")
+            $(this).css("color","#409EFF")
             $(this).attr("data-active","");
         }else{
-            $(this).css("box-shadow","rgb(245, 108, 1) 1px 1px 10px");
-            $(this).css("background-color","rgb(35,98,152)")
+            $(this).css("box-shadow","rgba(64,158,255,.2)");
+            $(this).css("background-color","rgba(64,158,255,1)")
+            $(this).css("color","#FFF")
             $(this).attr("data-active","true");
         }
-
     });
 
 
@@ -247,7 +258,6 @@
                 }
             });
         }
-
 
     });
 

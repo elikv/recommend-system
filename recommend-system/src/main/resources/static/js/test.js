@@ -23,6 +23,11 @@ var Main = {
                     tag = data.data;
                     that.dynamicTags = tag;
                     console.log(that.dynamicTags);
+                    that.$nextTick(function () {
+                        changeColor();
+                        // Code that will run only after the
+                        // entire view has been rendered
+                    })
                 }
             }
         });
@@ -43,6 +48,11 @@ var Main = {
                         tag = data.data;
                         that.dynamicTags = tag;
                         console.log(that.dynamicTags);
+                        that.$nextTick(function () {
+                            changeColor();
+                            // Code that will run only after the
+                            // entire view has been rendered
+                        })
                     }
                 }
             });
@@ -73,6 +83,12 @@ var Main = {
 
       handleInputConfirm() {
         let inputValue = this.inputValue;
+        $(".modal-body .el-tag").each(function () {
+            if($(this).text().trim()==inputValue){
+                layer.msg("已存在"+inputValue+"标签，请勿重复添加",{time:1000,shade: [0.3, '#000']});
+                inputValue =  false;
+            }
+        });
         if (inputValue) {
           this.dynamicTags.push(inputValue);
           $.ajax({
@@ -92,3 +108,21 @@ var Main = {
   }
 var Ctor = Vue.extend(Main)
 new Ctor().$mount('#app')
+
+function changeColor() {
+    var tag = window.location.href;
+    tag=tag.split('=')[1];
+    tag =decodeURI(tag);
+    $(document).find(".leftcolor .el-tag").each(function () {
+        var activeTag = $(this).text().trim();
+        if(tag==activeTag){
+            $(this).css("box-shadow","rgba(64,158,255,.2)");
+            $(this).css("background-color","rgba(64,158,255,1)");
+            $(this).css("color","#FFF");
+        }else {
+            $(this).css("box-shadow","");
+            $(this).css("background-color","rgba(64,158,255,.1)");
+            $(this).css("color","#409EFF");
+        }
+    })
+}
