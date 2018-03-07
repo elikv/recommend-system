@@ -182,16 +182,6 @@
 
 
     $(document).on("click",".modal-body .el-tag",function(){
-// box-shadow: rgb(245, 108, 1) 1px 1px 10px;
-//        if($(this).attr("data-active")=="true"){
-//            $(this).css("box-shadow","");
-//            $(this).css("background-color","")
-//            $(this).attr("data-active","");
-//        }else{
-//            $(this).css("box-shadow","rgb(245, 108, 1) 1px 1px 10px");
-//            $(this).css("background-color","rgb(35,98,152)")
-//            $(this).attr("data-active","true");
-//        }
         if($(this).attr("data-active")=="true"){
             $(this).css("box-shadow","");
             $(this).css("background-color","rgba(64,158,255,.1)")
@@ -203,6 +193,27 @@
             $(this).css("color","#FFF")
             $(this).attr("data-active","true");
         }
+    });
+
+    //删除按钮
+    $(document).on("click",".notCollection",function(){
+        var that = $(this);
+        $.ajax({
+            url:"/recommend-system/api/notCollection",
+            type:"POST",
+            data:{
+                shopId:that.next().val()
+            },
+            success:function(e){
+                if(e.code=='200'){
+                    layer.msg("删除成功",{time:1000,shade: [0.3, '#000']});
+                    that.parents(".txtcolor").hide();
+
+                }else {
+                    layer.msg("操作失败，请先登录",{time:1000,shade: [0.3, '#000']});
+                }
+            }
+        })
     });
 
 
